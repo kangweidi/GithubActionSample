@@ -1,6 +1,7 @@
 # 安装依赖 pip3 install requests html5lib bs4 schedule
 import os
 import requests
+import random
 import json
 from bs4 import BeautifulSoup
 
@@ -13,6 +14,8 @@ openId = os.environ.get("OPEN_ID")
 weather_template_id = os.environ.get("TEMPLATE_ID")
 # 城市名
 our_city_name = os.environ.get("CITY_NAME")
+# 名言token
+mingyan_token = os.environ.get("MINGYAN_TOKEN")
 
 def get_weather(my_city):
     urls = ["http://www.weather.com.cn/textFC/hb.shtml",
@@ -70,14 +73,36 @@ def get_access_token():
     return access_token
 
 
-def get_daily_love():
-    # 每日一句鸡汤
-    url = "https://apis.juhe.cn/fapig/soup/query"
-    r = requests.get(url)
-    all_dict = json.loads(r.text)
-    sentence = all_dict['returnObj'][0]
-    daily_love = sentence
-    return daily_love
+def get_content_from_api(mingyan_token):
+    API_URL = "https://v2.alapi.cn/api/mingyan"
+    
+    # 生成2到45之间的随机数
+    typeid = random.randint(2, 45)
+    
+    # 构建请求的payload
+    payload = {
+        'token': mingyan_token,
+        'typeid': typeid
+    }
+    
+    try:
+        # 发送POST请求
+        response = requests.post(API_URL, data=payload)
+        response.raise_for_status()  # 检查响应状态码是否为200
+    except requests.exceptions.RequestException as e:
+        print(f"请求错误: {e}")
+        return None
+
+    # 解析响应的JSON数据
+    response_data = response.json()
+    
+    # 检查响应中的code是否为200
+    if response_data.get('code') == 200:
+        # 返回content字段
+        return response_data.get('data', {}).get('content')
+    else:
+        print(f"API错误: {response_data.get('msg')}")
+        return None
 
 
 def send_weather(access_token, weather):
@@ -111,7 +136,7 @@ def send_weather(access_token, weather):
                 "value": weather[3]
             },
             "today_note": {
-                "value": get_daily_love()
+                "value": get_content_from_api()
             }
         }
     }
