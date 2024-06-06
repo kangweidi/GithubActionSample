@@ -136,7 +136,7 @@ def send_weather(access_token, weather):
                 "value": weather[3]
             },
             "today_note": {
-                "value": get_content_from_api()
+                "value": get_content_from_api(mingyan_token)
             }
         }
     }
