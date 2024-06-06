@@ -11,6 +11,8 @@ appSecret = os.environ.get("APP_SECRET")
 openId = os.environ.get("OPEN_ID")
 # 天气预报模板ID
 weather_template_id = os.environ.get("TEMPLATE_ID")
+# 城市名
+our_city_name = os.environ.get("CITY_NAME")
 
 def get_weather(my_city):
     urls = ["http://www.weather.com.cn/textFC/hb.shtml",
@@ -130,4 +132,4 @@ def weather_report(this_city):
 
 
 if __name__ == '__main__':
-    weather_report("兰州")
+    weather_report(our_city_name)
