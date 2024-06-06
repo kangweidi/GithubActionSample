@@ -71,8 +71,8 @@ def get_access_token():
 
 
 def get_daily_love():
-    # 每日一句情话
-    url = "https://api.lovelive.tools/api/SweetNothings/Serialization/Json"
+    # 每日一句鸡汤
+    url = "https://apis.juhe.cn/fapig/soup/query"
     r = requests.get(url)
     all_dict = json.loads(r.text)
     sentence = all_dict['returnObj'][0]
